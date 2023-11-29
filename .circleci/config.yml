@@ -3,33 +3,9 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: your_docker_image # Specify the Docker image with your build environment
-
+      - image: cimg/node:14.17  # Use the CircleCI Node image, version 14.17
     steps:
-      - checkout # Check out the code from the repository
-      - run:
-          name: Install Dependencies
-          command: |
-            # For example, if you're using Node.js:
-            # npm install
-
-      - run:
-          name: Build
-          command: |
-            # Add commands to build your code here
-            # For example, if you're using a compiled language:
-            # make build
-
-      # Add additional steps as needed, such as running tests, deploying, etc.
-
-# Add workflows if you want to define multiple jobs and their relationships
-# For example, running the "build" job when changes are pushed to the main branch
-workflows:
-  version: 2
-  build:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only:
-                - main
+      - checkout  # Checks out the code in the project's repository
+      - run: npm install  # Install dependencies
+      - run: npm test  # Run tests
+      - run: npm run build  # Build the project
