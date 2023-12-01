@@ -11,7 +11,6 @@ jobs:
       - run:
           name: Build front-end
           command: |
-            cd my-react-app
             npm install
             npm run build
       - save_cache:
@@ -28,7 +27,6 @@ jobs:
       - run:
           name: Scan Frontend
           command: |
-            cd my-react-app
             npm install
             npm audit fix --audit-level=critical
 
@@ -45,44 +43,7 @@ jobs:
             sudo pip3 install awsebcli --upgrade
       - run:
           name: Deploying to AWS S3
-          command: aws s3 sync ./my-react-app/build s3://todoapplist/
-          
-  build:
-    docker:
-      - image: cimg/node:20.6.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Build front-end
-          command: |
-            npm install
-            npm run build
-      - save_cache:
-          paths: [node_modules]
-          key: frontend-build
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./build
-
-  deploy:
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - attach_workspace:
-          at: ./
-      - run:
-          name: Configure AWS CLI
-          command: |
-            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-            aws configure set default.region $AWS_DEFAULT_REGION
-      - run:
-          name: Deploy to AWS S3
-          command: |
-            aws s3 sync ./build s3://todoapplist/
+          command: aws s3 sync s3://todoapplist/
 
 workflows:
   version: 2
@@ -95,15 +56,3 @@ workflows:
       - deploy-frontend:
           requires:
             - scan-frontend
-      - build:
-          filters:
-            branches:
-              only:
-                - main
-      - deploy:
-          requires:
-            - build
-          filters:
-            branches:
-              only:
-                - main
