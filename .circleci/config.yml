@@ -11,6 +11,7 @@ jobs:
       - run:
           name: Build front-end
           command: |
+            cd my-react-app
             npm install
             npm run build
       - save_cache:
@@ -27,6 +28,7 @@ jobs:
       - run:
           name: Scan Frontend
           command: |
+            cd my-react-app
             npm install
             npm audit fix --audit-level=critical
 
@@ -43,8 +45,8 @@ jobs:
             sudo pip3 install awsebcli --upgrade
       - run:
           name: Deploying to AWS S3
-          command: aws s3 sync build s3://todoapplist/
-
+          command: aws s3 sync ./my-react-app/build s3://todoapplist/
+          
   build:
     docker:
       - image: cimg/node:20.6.0
