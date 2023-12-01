@@ -43,7 +43,7 @@ jobs:
             sudo pip3 install awsebcli --upgrade
       - run:
           name: Deploying to AWS S3
-          command: aws s3 sync /build s3://todoapplist/
+          command: aws s3 sync ./build s3://todoapplist/
 
 workflows:
   version: 2
