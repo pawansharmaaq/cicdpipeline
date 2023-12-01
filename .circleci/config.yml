@@ -14,52 +14,6 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          paths: [client/node_modules]
-          key: frontend-build
-
-  scan-frontend:
-    docker:
-      - image: cimg/node:20.6.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Scan Frontend
-          command: |
-            npm install
-            npm audit fix --audit-level=critical
-
-  deploy-frontend:
-    machine:
-      image: ubuntu-2004:202010-01
-    steps:
-      # - attach_workspace:
-      #     at: .
-      - checkout
-      - run:
-          name: Installing AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt install -y python3-pip
-            sudo pip3 install awsebcli --upgrade
-      - run:
-          name: Deploying to AWS S3version: 2.1
-
-jobs:
-  build-frontend:
-    docker:
-      - image: cimg/node:20.6.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: Build front-end
-          command: |
-            npm install
-            npm run build
-      - save_cache:
           paths: [node_modules]
           key: frontend-build
 
@@ -80,8 +34,6 @@ jobs:
     machine:
       image: ubuntu-2004:202010-01
     steps:
-      # - attach_workspace:
-      #     at: .
       - checkout
       - run:
           name: Installing AWS CLI
@@ -94,18 +46,7 @@ jobs:
           command: aws s3 sync build s3://todoapplist/
 
 workflows:
-  build_and_scan_and_deploy:
-    jobs:
-      - build-frontend
-      - scan-frontend:
-          requires:
-            - build-frontend
-      - deploy-frontend:
-          requires:
-            - scan-frontend
-          command: aws s3 sync build s3://todoapplist/
-
-workflows:
+  version: 2
   build_and_scan_and_deploy:
     jobs:
       - build-frontend
