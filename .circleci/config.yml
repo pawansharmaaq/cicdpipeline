@@ -45,6 +45,10 @@ jobs:
           name: Deploying to AWS S3
           command: |
             aws s3 sync . s3://todoapplist/ --delete
+      - run:
+          name: Say Hello
+          command: |
+            echo "Hello"
 
 workflows:
   version: 2
