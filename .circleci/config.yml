@@ -40,10 +40,11 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt install -y python3-pip
-            sudo pip3 install awsebcli --upgrade
+            sudo pip3 install awscli --upgrade
       - run:
           name: Deploying to AWS S3
-          command: aws s3 sync s3://todoapplist/
+          command: |
+            aws s3 sync . s3://todoapplist/ --delete
 
 workflows:
   version: 2
